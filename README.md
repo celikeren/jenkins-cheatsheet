@@ -1,3 +1,89 @@
+
+
+
+---------------------------------
+
+dockerfile:
+FROM maven:3.6.3-jdk-8 as builder
+COPY . /app
+WORKDIR /app
+RUN mvn -Dmaven.test.skip=true package
+FROM openjdk:8-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar ./app.jar
+CMD ["java", "-jar", "app.jar"]
+
+
+-------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+## nginx index.html browser'dan görüntüle
+
+echo "eren" > index.html
+docker run -tid -p 5000:80 -v C:\Users\eren.celik:/usr/share/nginx/html nginx
+
+
+FROM maven:3-jdk-8 
+//projede testler olduğu için jdk. normalde mvn package için jdk'ya gerek yok.
+COPY . /app
+WORKDIR /app
+RUN mvn package
+CMD ["java", "-jar", ""]
+
+docker build . -f Dockerfile
+
+
+
+
+
+
+
+
+
+doğru:
+
+FROM maven:3.6.3-jdk-8
+COPY . /app
+WORKDIR /app
+RUN mvn -Dmaven.test.skip=true package
+CMD ["java", "-jar", "target/helloworld-0.0.1-SNAPSHOT.jar"]
+
+docker build -t workshop:0.0.1 .
+
+docker run -ti -p 1903:8080 workshop:0.0.1
+
+
+
+
+
+
+
+multi-stage dockerfile:
+
+FROM maven:3.6.3-jdk-8 as builder
+COPY . /app
+WORKDIR /app
+RUN mvn -Dmaven.test.skip=true package
+FROM openjdk:8-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar ./app.jar
+CMD ["java", "-jar", "app.jar"]
+
+
+docker build -t workshop:0.0.2 .
+
+docker run -ti -p 1903:8080 workshop:0.0.2
+
+
+-----------------------------------------------------------------------------------------------------------
+
 # docker
 
 ## creating image manually
