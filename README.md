@@ -1,271 +1,111 @@
-
-multi stage from workshop:
-
-FROM maven:3-jdk-8-alpine as builder
-ARG sonarip=test
-COPY . /data/springboot-helloworld
-WORKDIR /data/springboot-helloworld
-RUN mvn clean install sonar:sonar -Dsonar.host.url=${sonarip}
-
-
-
-FROM openjdk:8-alpine
-WORKDIR /data
-COPY --from=builder /data/springboot-helloworld/target/*.jar ./app.jar
-EXPOSE 8080
-CMD ["java", "-jar", "app.jar"]
-
----------------------------------
-
-dockerfile:
-FROM maven:3.6.3-jdk-8 as builder
-COPY . /app
-WORKDIR /app
-RUN mvn -Dmaven.test.skip=true package
-FROM openjdk:8-alpine
-WORKDIR /app
-COPY --from=builder /app/target/*.jar ./app.jar
-CMD ["java", "-jar", "app.jar"]
-
-
--------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-## nginx index.html browser'dan görüntüle
-
-echo "eren" > index.html
-docker run -tid -p 5000:80 -v C:\Users\eren.celik:/usr/share/nginx/html nginx
-
-
-FROM maven:3-jdk-8 
-//projede testler olduğu için jdk. normalde mvn package için jdk'ya gerek yok.
-COPY . /app
-WORKDIR /app
-RUN mvn package
-CMD ["java", "-jar", ""]
-
-docker build . -f Dockerfile
-
-
-
-
-
-
-
-
-
-doğru:
-
-FROM maven:3.6.3-jdk-8
-COPY . /app
-WORKDIR /app
-RUN mvn -Dmaven.test.skip=true package
-CMD ["java", "-jar", "target/helloworld-0.0.1-SNAPSHOT.jar"]
-
-docker build -t workshop:0.0.1 .
-
-docker run -ti -p 1903:8080 workshop:0.0.1
-
-
-
-
-
-
-
-multi-stage dockerfile:
-
-FROM maven:3.6.3-jdk-8 as builder
-COPY . /app
-WORKDIR /app
-RUN mvn -Dmaven.test.skip=true package
-FROM openjdk:8-alpine
-WORKDIR /app
-COPY --from=builder /app/target/*.jar ./app.jar
-CMD ["java", "-jar", "app.jar"]
-
-
-docker build -t workshop:0.0.2 .
-
-docker run -ti -p 1903:8080 workshop:0.0.2
-
-
------------------------------------------------------------------------------------------------------------
-
-# docker
-
-## creating image manually
-
-- `docker run -dit openjdk:8-jdk-alpine`
-
-- `docker container exec <cid> ls /tmp`
-
-- `docker images`
-
-- `docker container ls`
-
-- `docker container cp .\target\dummy-project.jar cid:/tmp`  
-    >_copy_
-
-
-- `docker container exec <c_id> ls /tmp`  
-    > _we check if copy successful_
-
-
-- `docker container commit --change='CMD ["java","-jar","/tmp/hello-world-rest-api.jar"]' practical_solomon in28min/hello-world-rest-api:manual1` 
-    > _saves the container we creataed as an image_
-    _in28min... -> repo name we want to give_
-    _change: jar file will be launched at startup_
-
-- `docker images`
-
-- `docker run in28min/hello-world-rest-api:manual1`
-
-
-## Dockerfile commands
-
-- `FROM openjdk:8-jdk-alpine`  
-    > _base image_  
-    _a Dockerfile must start with FROM_  
-    _FROM can appear multiple times within a single Dockerfile_  
-    _a name can be given to a new build stage by adding AS name_  
-
-- `ADD target/hello-world-rest-api.jar hello-world-rest-api.jar`
-    > _ADD copies files or directories_  
-    _ADD \<src> \<dest>_  
-    _ADD and COPY are functionally similar, generally COPY is preferred_  
-    _COPY only supports the basic copying of local files, while ADD has some extra features_  
-- `ENTRYPOINT ["sh", "-c", "java - jar /hello-world-rest-api.jar"]`  
-    > _ENTRYPOINT has two forms:_  
-    _ENTRYPOINT ["executable", "param1", "param2"] (exec form, preferred)_  
-    _ENTRYPOINT command param1 param2 (shell form)_  
-    _configures a container that will run as an executable_  
-    _sh means shell_  
-    _\-c means commands are read from string_  
+# jenkins cheatsheet
+
+## project configuration for git and docker  
+
+- `docker run -p 8080:8080 jenkins/jenkins`  
+    > _we download and run jenkins in docker_  
+  
+_after initialization a long password is printed_  
+_login on localhost:8080 using this password_  
+  
+- install suggested plugins  
+  
+- select new item & freestyle project  
     
-    ....devam edecek
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    - source code management
+    _we can match the jenkins item with a repo_  
+    _and easily manage our source code_  
+
+    - build  
+    _we can add a build step here_  
+    _for example we can build the image from Dockerfile and run it:_  
+        - execute shell  
+            `docker build -t dummy-project .`  
+            `docker run -tid -p 5000:8080 dummy-project`  
 
 
+## pipeline for git and docker  
 
+- new pipeline  
 
+- pipeline script:  
+_we can configure the build step by step here_  
+_stage simply indicates a higher level sequence than steps_  
+_stages shown as columns in pipeline stage view with time and status_  
 
-
-
-
-
-
-
-------pipeline script---------
-
-instead of git conf in project
-and
-build - execute shell:
-
-docker build -t dummy-eren .
-echo eren > deneme
-docker run -tid -p 9090:8080 dummy-eren
-
-pipeline: (Jenkinsfile)
-
-
-pipeline {
+_for 1st stage, we can use git checkout command instead of removing folder and cloning it again_  
+  
+`pipeline {
     agent { label 'master' }
     stages {
         stage('git clone') {
             steps {
-                sh 'rm -rf dummy-spring-boot; git clone https://gitlab.com/celikeren/dummy-spring-boot.git'
+                sh 'rm -rf dummy-project; git clone https://gitlab.com/celikeren/dummy-project.git'
             }
         }
         stage('build') {
             steps {
-                sh 'docker build -t erencelik/dummy-eren /var/lib/jenkins/workspace/eren'
+                sh 'docker build -t erencelik/dummy-project /var/lib/jenkins/workspace/dummy-project'
             }
         }
         stage('run') {
             steps {
-                sh 'docker run -tid -p 9090:8080 erencelik/dummy-eren'
+                sh 'docker run -tid -p 5000:8080 erencelik/dummy-project'
             }
         }
         stage('push') {
             steps {
-                sh 'docker push erencelik/dummy-eren'
+                sh 'docker push erencelik/dummy-project'
             }
         }
     }
 }
+`
+
+_here we cloned the git repo, built a docker image,_  
+_ran it as a container and pushed it to docker hub_  
+__you don't need to do the same things in every deploy__  
+__just tell jenkins once and it handles the rest__  
 
 
+## Jenkinsfile  
+
+_a step further_  
+_we can make it easier with a Jenkinsfile in the project_  
 
 
-
+`String gitOrigin = "https://gitlab.com/celikeren/dummy-project.git"
+String dockerHub = "erencelik/dummy-project"
+node{
+properties([
+    parameters([
+        gitParameter(branch: '',
+                     defaultValue: '1.0',
+                     description: '',
+                     useRepository: "${gitOrigin}",
+                     name: 'tag',
+                     quickFilterEnabled: false,
+                     selectedValue: 'NONE',
+                     sortMode: 'NONE',
+                     tagFilter: '*',
+                     branchFilter: 'origin/(.*)',
+                     type: 'PT_TAG')
+    ])
+])
+   stage ('Checkout') {
+   checkout([$class: 'GitSCM', branches: [[name: 'tags/${tag}']], doGenerateSubmoduleConfigurations: false,gitTool: 'Default', extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '162a1630-56da-4614-82c1-7f07dc0d8751', url: "${gitOrigin}"]]]) 
+  }
+ 
+    stage("Build Dockerfile"){
+         sh """
+         docker build -t ${dockerHub}:${tag} .
+         """
+    }
+    stage("Push Docker Image"){
+           sh """
+           docker push ${dockerHub}:${tag} 
+          """
+    }
     
-    
-    
-
-
-
-
-
--------------------jenkins--------------------------------
-
-ci (continous integration) tool
-amacı entegrasyon
-otomasyon aracı
-projenin derlenmesi, testlerin çalışması, uygulamanın dağıtılmasını otomatize edebilmektedir
-
---gitlab ci (credentials yönetme zor, docker in docker) 
---travis (güzelliği debug var)
-
-
-config.xml
-workspace
-
-
-pipeline / free style projects
-
-
-credentials
-    ssh key
-
-
-
-docker pull jenkins/jenkins:2.214-centos
-
-run -p 8080:8080 -p 50000:50000 jenkins/jenkins:2.214-centos
-
-jenkins'in içine docker kurmak gerekiyor.
-Dockerfile'ı çalıştırabilmesi için.
-
-
-
-
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+}
+`
