@@ -30,37 +30,37 @@
 - new pipeline  
 
 - pipeline script:  
-_we can configure the build step by step here_  
+_here we can configure the build step by step_  
 _stage simply indicates a higher level sequence than steps_  
 _stages shown as columns in pipeline stage view with time and status_  
 
-_for 1st stage, we can use git checkout command instead of removing folder and cloning it again_  
+    _for 1st stage, we can use git checkout command instead of removing folder and cloning it again_  
   
-`pipeline {
-    agent { label 'master' }
-    stages {
-        stage('git clone') {
-            steps {
-                sh 'rm -rf dummy-project; git clone https://gitlab.com/celikeren/dummy-project.git'
-            }
-        }
-        stage('build') {
-            steps {
-                sh 'docker build -t erencelik/dummy-project /var/lib/jenkins/workspace/dummy-project'
-            }
-        }
-        stage('run') {
-            steps {
-                sh 'docker run -tid -p 5000:8080 erencelik/dummy-project'
-            }
-        }
-        stage('push') {
-            steps {
-                sh 'docker push erencelik/dummy-project'
-            }
-        }
-    }
-}
+`pipeline {  
+    agent { label 'master' }  
+    stages {  
+        stage('git clone') {  
+            steps {  
+                sh 'rm -rf dummy-project; git clone https://gitlab.com/celikeren/dummy-project.git'  
+            }  
+        }  
+        stage('build') {  
+            steps {  
+                sh 'docker build -t erencelik/dummy-project /var/lib/jenkins/workspace/dummy-project'  
+            }  
+        }  
+        stage('run') {  
+            steps {  
+                sh 'docker run -tid -p 5000:8080 erencelik/dummy-project'  
+            }  
+        }  
+        stage('push') {  
+            steps {  
+                sh 'docker push erencelik/dummy-project'  
+            }  
+        }  
+    }  
+}  
 `
 
 _here we cloned the git repo, built a docker image,_  
