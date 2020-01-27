@@ -67,8 +67,8 @@ pipeline {
   _here we cloned the git repo, built a docker image,_  
   _ran it as a container and pushed it to docker hub_  
     
-    __you don't need to do the same things in every deploy__  
-    __just tell jenkins once and it handles the rest__  
+   __you don't need to do the same things in every deploy__  
+   __just tell jenkins once and it handles the rest__  
 
 
 ## Jenkinsfile  
