@@ -13,10 +13,10 @@
   
 - select new item & freestyle project  
     
-    - source code management
+    - source code management  
     _we can match the jenkins item with a repo_  
     _and easily manage our source code_  
-
+  
     - build  
     _we can add a build step here_  
     _for example we can build the image from Dockerfile and run it:_  
