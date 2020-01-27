@@ -65,7 +65,7 @@ pipeline {
 ```
 
   _here we cloned the git repo, built a docker image,_  
-  _ran it as a container and pushed it to docker hub_  
+  _ran it as a container and pushed it to docker hub._  
     
    __you don't need to do the same things in every deploy__  
    __just tell jenkins once and it handles the rest__  
@@ -77,7 +77,8 @@ _a step further_
 _we can make it easier with a Jenkinsfile in the project_  
 
 
-`String gitOrigin = "https://gitlab.com/celikeren/dummy-project.git"
+```
+String gitOrigin = "https://gitlab.com/celikeren/dummy-project.git"
 String dockerHub = "erencelik/dummy-project"
 node{
 properties([
@@ -111,4 +112,4 @@ properties([
     }
     
 }
-`
+```
