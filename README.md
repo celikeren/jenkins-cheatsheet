@@ -6,8 +6,8 @@
   
     > _we download and run jenkins in docker_  
   
-_after initialization a long password is printed_  
-_login on localhost:8080 using this password_  
+    _after initialization a long password is printed_  
+    _login on localhost:8080 using this password_  
   
 - install suggested plugins  
   
