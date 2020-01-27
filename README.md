@@ -1,7 +1,9 @@
 # jenkins cheatsheet
 
 ## project configuration for git and docker  
+
 - `docker run -p 8080:8080 jenkins/jenkins`  
+  
     > _we download and run jenkins in docker_  
   
 _after initialization a long password is printed_  
