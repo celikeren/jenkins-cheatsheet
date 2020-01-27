@@ -36,7 +36,7 @@ _stages shown as columns in pipeline stage view with time and status_
 
     _for 1st stage, we can use git checkout command instead of removing folder and cloning it again_  
   
-`pipeline {  
+`pipeline {  \
     agent { label 'master' }  
     stages {  
         stage('git clone') {  
