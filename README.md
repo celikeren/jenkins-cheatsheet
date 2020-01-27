@@ -42,12 +42,18 @@ pipeline {
     stages {  
         stage('git clone') {  
             steps {  
-                sh 'rm -rf dummy-project; git clone https://gitlab.com/celikeren/dummy-project.git'  
+                sh """
+                    rm -rf dummy-project;
+                    git clone https://gitlab.com/celikeren/dummy-project.git
+                """
             }  
         }  
         stage('build') {  
             steps {  
-                sh 'docker build -t erencelik/dummy-project /var/lib/jenkins/workspace/dummy-project'  
+                sh """
+                    docker build -t erencelik/dummy-project 
+                        /var/lib/jenkins/workspace/dummy-project
+                """
             }  
         }  
         stage('run') {  
@@ -97,7 +103,9 @@ properties([
     ])
 ])
    stage ('Checkout') {
-   checkout([$class: 'GitSCM', branches: [[name: 'tags/${tag}']], doGenerateSubmoduleConfigurations: false,gitTool: 'Default', extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '162a1630-56da-4614-82c1-7f07dc0d8751', url: "${gitOrigin}"]]]) 
+   checkout([$class: 'GitSCM', branches: [[name: 'tags/${tag}']], 
+   doGenerateSubmoduleConfigurations: false,gitTool: 'Default', extensions: [], submoduleCfg: [], 
+   userRemoteConfigs: [[credentialsId: '162a1630-56da-4614-82c1-7f07dc0d8751', url: "${gitOrigin}"]]]) 
   }
  
     stage("Build Dockerfile"){
