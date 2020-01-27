@@ -34,7 +34,8 @@ _here we can configure the build step by step_
 _stage simply indicates a higher level sequence than steps_  
 _stages shown as columns in pipeline stage view with time and status_  
 
-    _for 1st stage, we can use git checkout command instead of removing folder and cloning it again_  
+    _for 1st stage, we can use git checkout command_  
+    _instead of removing folder and cloning it again_  
   
 ```
 pipeline {
@@ -104,8 +105,9 @@ properties([
 ])
    stage ('Checkout') {
    checkout([$class: 'GitSCM', branches: [[name: 'tags/${tag}']], 
-   doGenerateSubmoduleConfigurations: false,gitTool: 'Default', extensions: [], submoduleCfg: [], 
-   userRemoteConfigs: [[credentialsId: '162a1630-56da-4614-82c1-7f07dc0d8751', url: "${gitOrigin}"]]]) 
+   doGenerateSubmoduleConfigurations: false,gitTool: 'Default', extensions: [], 
+   submoduleCfg: [], userRemoteConfigs: [[credentialsId: 
+   '162a1630-56da-4614-82c1-7f07dc0d8751', url: "${gitOrigin}"]]]) 
   }
  
     stage("Build Dockerfile"){
